@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIMVAL SECURE : Authentification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;400;700&display=swap');
+
+        /* Variables CSS pour un contrôle facile des couleurs */
+        :root {
+            --main-bg: #1a1a2e; /* Arrière-plan principal foncé */
+            --secondary-bg: #16213e; /* Arrière-plan des sections/blocs */
+            --accent-color: #0f3460; /* Couleur d'accentuation, pour la navigation par exemple */
+            --text-color: #e0e0e0; /* Couleur du texte clair */
+            --highlight-color: #e94560; /* Rouge futuriste pour les titres et accents */
+            --border-color: #2e4a6e; /* Couleur des bordures et séparateurs */
+            --button-hover: #cf3753; /* Couleur de survol pour les boutons */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            justify-content: center; /* Centrer le contenu verticalement */
+            align-items: center; /* Centrer le contenu horizontalement */
+        }
+
+        /* Effet de fond subtil pour un look futuriste */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(233, 69, 96, 0.05) 0%, transparent 30%),
+                        radial-gradient(circle at bottom right, rgba(15, 52, 96, 0.08) 0%, transparent 30%);
+            z-index: -1;
+        }
+
+        header {
+            background-color: var(--secondary-bg);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid var(--highlight-color);
+            position: relative;
+            overflow: hidden;
+            width: 100%; /* S'assurer que le header prend toute la largeur */
+        }
+
+        header h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em; /* Taille ajustée pour la page d'authentification */
+            color: var(--highlight-color);
+            text-shadow: 0 0 15px rgba(233, 69, 96, 0.6);
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1em;
+            color: var(--text-color);
+            margin-top: 5px;
+        }
+
+        /* Animation des particules en arrière-plan du header */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 25px 25px;
+            animation: move-bg 60s linear infinite;
+        }
+
+        @keyframes move-bg {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
+
+        .auth-container {
+            background-color: var(--secondary-bg);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 450px;
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--highlight-color);
+            font-size: 2em;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--highlight-color);
+            padding-left: 15px;
+            text-shadow: 0 0 8px rgba(233, 69, 96, 0.4);
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="email"] {
+            width: calc(100% - 22px); /* Ajuste pour le padding et la bordure */
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus,
+        .form-group input[type="email"]:focus {
+            outline: none;
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+
+        button {
+            background-color: var(--highlight-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            max-width: 250px;
+            margin-top: 15px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .switch-form {
+            margin-top: 25px;
+            font-size: 0.95em;
+        }
+
+        .switch-form a {
+            color: var(--highlight-color);
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .switch-form a:hover {
+            color: var(--button-hover);
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            text-align: center; /* Centrer le texte dans la zone de force */
+        }
+
+        /* Couleurs de force du mot de passe */
+        .strength-0 { background-color: #a00000; color: white; } /* Très faible */
+        .strength-1 { background-color: #d17a00; color: white; } /* Faible */
+        .strength-2 { background-color: #d1b100; color: #333; } /* Moyenne */
+        .strength-3 { background-color: #0a8d00; color: white; } /* Forte */
+        .strength-4 { background-color: #006400; color: white; } /* Très forte */
+
+        footer {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto; /* Pousse le footer vers le bas */
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--highlight-color);
+            font-size: 0.8em;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-shield-alt"></i> TIMVAL SECURE</h1>
+        <p>Connectez-vous ou créez votre compte</p>
+    </header>
+
+    <div class="auth-container">
+        <div id="login-form">
+            <h2><i class="fas fa-sign-in-alt"></i> Connexion</h2>
+            <form>
+                <div class="form-group">
+                    <label for="loginUsername"><i class="fas fa-user"></i> Nom d'utilisateur</label>
+                    <input type="text" id="loginUsername" placeholder="Votre nom d'utilisateur" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword"><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" id="loginPassword" placeholder="Votre mot de passe" required>
+                </div>
+                <button type="submit">Se connecter</button>
+            </form>
+            <p class="switch-form">Pas encore de compte ? <a href="#" id="show-register">Créez-en un ici</a></p>
+        </div>
+
+        <div id="register-form" style="display: none;">
+            <h2><i class="fas fa-user-plus"></i> Créer un Compte Timval Secure</h2>
+            <form>
+                <div class="form-group">
+                    <label for="registerUsername"><i class="fas fa-user"></i> Nom d'utilisateur</label>
+                    <input type="text" id="registerUsername" placeholder="Choisissez un nom d'utilisateur" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail"><i class="fas fa-envelope"></i> Adresse Email</label>
+                    <input type="email" id="registerEmail" placeholder="Votre adresse email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword"><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" id="registerPassword" placeholder="Choisissez un mot de passe fort" required>
+                    <div id="registerPasswordStrength" class="password-strength"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirmez votre mot de passe" required>
+                </div>
+                <button type="submit">Créer le Compte</button>
+            </form>
+            <p class="switch-form">Déjà un compte ? <a href="#" id="show-login">Connectez-vous ici</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Ce site a été créé par la **timval** pour vous prévenir des dangers d'Internet et renforcer votre sécurité numérique.</p>
+        <p>&copy; 2025 Timval Secure. Tous droits réservés. | Pour des conseils de sécurité personnalisés, consultez un expert.</p>
+    </footer>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
+        const registerPasswordInput = document.getElementById('registerPassword');
+        const registerPasswordStrengthDisplay = document.getElementById('registerPasswordStrength');
+
+        showRegisterLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            registerPasswordStrengthDisplay.textContent = ''; // Clear strength display on switch
+            registerPasswordStrengthDisplay.className = 'password-strength'; // Reset class
+        });
+
+        showLoginLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        });
+
+        registerPasswordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+
+            // Critères d'évaluation (comme sur la page principale)
+            const hasLowercase = /[a-z]/.test(password);
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasDigit = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password);
+
+            // Points basés sur la longueur
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+            if (password.length >= 16) strength += 1;
+
+            // Points basés sur la diversité des caractères
+            if (hasLowercase) strength += 1;
+            if (hasUppercase) strength += 1;
+            if (hasDigit) strength += 1;
+            if (hasSpecial) strength += 1;
+
+            // Évaluation finale
+            let strengthText = '';
+            let strengthClass = '';
+
+            if (password.length === 0) {
+                strengthText = ''; // Ne rien afficher si vide
+                strengthClass = '';
+            } else if (strength < 3) {
+                strengthText = 'Très Faible';
+                strengthClass = 'strength-0';
+            } else if (strength >= 3 && strength < 5) {
+                strengthText = 'Faible';
+                strengthClass = 'strength-1';
+            } else if (strength >= 5 && strength < 7) {
+                strengthText = 'Moyenne';
+                strengthClass = 'strength-2';
+            } else if (strength >= 7 && strength < 9) {
+                strengthText = 'Forte';
+                strengthClass = 'strength-3';
+            } else if (strength >= 9) {
+                strengthText = 'Très Forte';
+                strengthClass = 'strength-4';
+            }
+
+            registerPasswordStrengthDisplay.textContent = strengthText ? `Force : ${strengthText}` : '';
+            registerPasswordStrengthDisplay.className = `password-strength ${strengthClass}`;
+        });
+    </script>
+</body>
+</html>
